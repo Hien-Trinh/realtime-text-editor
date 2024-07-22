@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
+import { useParams } from "react-router-dom"
 import { io } from "socket.io-client"
 
 const TOOLBAR_OPTIONS = [
@@ -17,10 +18,13 @@ const TOOLBAR_OPTIONS = [
 const MODULES = {
     toolbar: TOOLBAR_OPTIONS,
 }
+const SAVE_INTERVAL = 2000
 
 export default function TextEditor() {
-    const [value, setValue] = useState("")
+    const [value, setValue] = useState()
+    const [editor, setEditor] = useState()
     const [socket, setSocket] = useState()
+    const { id: documentId } = useParams()
 
     useEffect(() => {
         const socketInstance = io("http://localhost:3001")
@@ -31,10 +35,29 @@ export default function TextEditor() {
         }
     }, [])
 
+    useEffect(() => {
+        if (socket == null) return
+        socket.once("load-document", (document) => {
+            setValue(document)
+        })
+
+        socket.emit("get-document", documentId)
+    }, [socket, documentId])
+
+    useEffect(() => {
+        if (socket == null || editor == null) return
+        const interval = setInterval(() => {
+            socket.emit("save-document", editor.getContents())
+        }, SAVE_INTERVAL)
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [socket, editor])
 
     useEffect(() => {
         if (socket == null) return
-        socket.on("receive-changes", delta => {
+        socket.on("receive-changes", (delta) => {
             setValue(delta)
         })
 
@@ -46,6 +69,7 @@ export default function TextEditor() {
     const handleChange = (content, delta, source, editor) => {
         if (socket == null || source !== "user") return
 
+        setEditor(editor)
         socket.emit("send-changes", editor.getContents())
     }
 
@@ -55,7 +79,9 @@ export default function TextEditor() {
                 theme="snow"
                 modules={MODULES}
                 value={value}
-                onChange={(content, delta, source, editor) => handleChange(content, delta, source, editor)}
+                onChange={(content, delta, source, editor) =>
+                    handleChange(content, delta, source, editor)
+                }
             />
         </div>
     )
