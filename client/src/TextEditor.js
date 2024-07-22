@@ -37,13 +37,16 @@ export default function TextEditor() {
         socket.on("receive-changes", delta => {
             setValue(delta)
         })
+
         return () => {
             socket.off("receive-changes")
         }
     }, [socket, value])
 
     const handleChange = (content, delta, source, editor) => {
-        if (source !== "user") return
+        if (socket == null || source !== "user") return
+
+        socket.emit("send-changes", editor.getContents())
     }
 
     return (
