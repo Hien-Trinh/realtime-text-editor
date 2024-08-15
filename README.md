@@ -9,14 +9,10 @@ This project is a realtime text editor built using React. It allows multiple use
 ## Installation
 
 1. Clone the repository: `git clone https://github.com/your-username/realtime-text-editor.git`
-2. Navigate to the frontend project directory: `cd realtime-text-editor/client`
+2. Navigate to the project directory: `cd realtime-text-editor`
 3. Install dependencies: `npm install`
-4. Start the development server: `npm run dev`
-5. Open a new terminal window.
-6. Navigate to the frontend project directory: `cd realtime-text-editor/server`
-7. Install dependencies: `npm install`
-8. Start the development server: `npm devStart`
-9. Open your browser and visit `http://localhost:3000`
+4. Start the development server: `npm run start`
+5. Open your browser and visit `http://localhost:3000`
 
 ## Usage
 
