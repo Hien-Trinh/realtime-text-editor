@@ -8,7 +8,7 @@ This project is a realtime text editor built using React. It allows multiple use
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/realtime-text-editor.git`
+1. Clone the repository: `git clone https://github.com/Hien-Trinh/realtime-text-editor.git`
 2. Navigate to the project directory: `cd realtime-text-editor`
 3. Install dependencies: `npm install`
 4. Start the development server: `npm run start`
